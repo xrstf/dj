@@ -11,7 +11,7 @@ Available Commands:
   exec        Execute a command in a Prow job Pod
   help        Help about any command
   logs        Stream the logs of the test container of a Prow job Pod
-  proxy       Tunnel through to a kind cluster running inside a Prow job pod, making it avialable on localhost:8080
+  proxy       Tunnel through to a kind cluster running inside a Prow job pod, making it available on localhost:8080
 
 Flags:
   -h, --help                help for pjutil
