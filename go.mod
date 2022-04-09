@@ -3,7 +3,7 @@ module go.xrstf.de/pjutil
 go 1.17
 
 require (
-	github.com/gofrs/uuid v4.2.0+incompatible
+	github.com/google/uuid v1.1.2
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.4.0
 	k8s.io/api v0.23.5

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -19,7 +19,7 @@ type PodIdentifier struct {
 
 func ParsePodIdentifier(arg string) (*PodIdentifier, error) {
 	// is it a UUID?
-	parsed, err := uuid.FromString(arg)
+	parsed, err := uuid.Parse(arg)
 	if err == nil {
 		return &PodIdentifier{JobID: parsed.String()}, nil
 	}
