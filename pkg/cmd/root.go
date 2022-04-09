@@ -7,12 +7,14 @@ import (
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
 type RootFlags struct {
 	Kubeconfig string
 	Namespace  string
+	RESTConfig *rest.Config
 	ClientSet  *kubernetes.Clientset
 	Verbose    bool
 }
@@ -36,12 +38,12 @@ func RootCommand(logger *logrus.Logger) (*cobra.Command, *RootFlags) {
 				logger.SetLevel(logrus.DebugLevel)
 			}
 
-			config, err := clientcmd.BuildConfigFromFlags("", opt.Kubeconfig)
+			opt.RESTConfig, err = clientcmd.BuildConfigFromFlags("", opt.Kubeconfig)
 			if err != nil {
 				logger.Fatalf("Failed to create Kubernetes client: %v", err)
 			}
 
-			opt.ClientSet, err = kubernetes.NewForConfig(config)
+			opt.ClientSet, err = kubernetes.NewForConfig(opt.RESTConfig)
 			if err != nil {
 				logger.Fatalf("Failed to create Kubernetes clientset: %v", err)
 			}

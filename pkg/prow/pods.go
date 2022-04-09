@@ -59,12 +59,18 @@ func (i *PodIdentifier) Fields() logrus.Fields {
 
 type PodCheckerFunc func(pod *corev1.Pod) bool
 
-func (i *PodIdentifier) WaitForPod(ctx context.Context, clientset *kubernetes.Clientset, namespace string, validPod PodCheckerFunc) (*corev1.Pod, error) {
+func (i *PodIdentifier) WaitForPod(ctx context.Context, clientset *kubernetes.Clientset, namespace string, validPod PodCheckerFunc, giveUp PodCheckerFunc) (*corev1.Pod, error) {
 	wi, err := clientset.CoreV1().Pods(namespace).Watch(ctx, metav1.ListOptions{
 		LabelSelector: i.LabelSelector(),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to watch Pods: %w", err)
+	}
+
+	if giveUp == nil {
+		giveUp = func(_ *corev1.Pod) bool {
+			return false
+		}
 	}
 
 	var pod *corev1.Pod
@@ -76,7 +82,12 @@ func (i *PodIdentifier) WaitForPod(ctx context.Context, clientset *kubernetes.Cl
 
 		var ok bool
 		pod, ok = event.Object.(*corev1.Pod)
-		if !ok || !validPod(pod) {
+		if !ok {
+			pod = nil
+			continue
+		}
+
+		if !validPod(pod) && !giveUp(pod) {
 			pod = nil
 			continue
 		}
@@ -85,6 +96,10 @@ func (i *PodIdentifier) WaitForPod(ctx context.Context, clientset *kubernetes.Cl
 		wi.Stop()
 
 		// let the loop finish, in case there are more events (that we will ignore)
+	}
+
+	if !validPod(pod) {
+		return nil, nil
 	}
 
 	return pod, nil

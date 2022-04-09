@@ -7,19 +7,20 @@ import (
 	"io"
 	"os"
 
+	"go.xrstf.de/pjutil/pkg/prow"
+
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"go.xrstf.de/pjutil/pkg/prow"
 	corev1 "k8s.io/api/core/v1"
 )
 
 func LogsCommand(logger logrus.FieldLogger, rootFlags *RootFlags) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:          "logs [ PROWJOB_ID | PROWJOB_POD_NAME ]",
+		Use:          "logs ( PROWJOB_ID | PROWJOB_POD_NAME )",
 		Short:        "Stream the logs of the test container of a Prow job Pod",
 		SilenceUsage: true,
 		RunE: func(c *cobra.Command, args []string) error {
-			return logsAction(c.Context(), logger, rootFlags, args)
+			return logsAction(c.Context(), logger.WithField("namespace", rootFlags.Namespace), rootFlags, args)
 		},
 	}
 
@@ -37,9 +38,9 @@ func logsAction(ctx context.Context, logger logrus.FieldLogger, rootFlags *RootF
 	}
 
 	// watch pods until we see the test container running
-	logger.WithField("namespace", rootFlags.Namespace).WithFields(ident.Fields()).Info("Waiting for logs to be available…")
+	logger.WithFields(ident.Fields()).Info("Waiting for logs to be available…")
 
-	pod, err := ident.WaitForPod(ctx, rootFlags.ClientSet, rootFlags.Namespace, logsAvailable)
+	pod, err := ident.WaitForPod(ctx, rootFlags.ClientSet, rootFlags.Namespace, logsAvailable, nil)
 	if err != nil {
 		return fmt.Errorf("failed to watch Pods: %w", err)
 	}
