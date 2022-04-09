@@ -42,6 +42,10 @@ func logsAction(ctx context.Context, logger logrus.FieldLogger, rootFlags *RootF
 
 	pod, err := ident.WaitForPod(ctx, rootFlags.ClientSet, rootFlags.Namespace, logsAvailable, nil)
 	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			return nil
+		}
+
 		return fmt.Errorf("failed to watch Pods: %w", err)
 	}
 
@@ -60,6 +64,10 @@ func logsAction(ctx context.Context, logger logrus.FieldLogger, rootFlags *RootF
 	defer stream.Close()
 
 	if _, err := io.Copy(os.Stdout, stream); err != nil {
+		if errors.Is(err, context.Canceled) {
+			return nil
+		}
+
 		return fmt.Errorf("failed to write to stdout: %w", err)
 	}
 
