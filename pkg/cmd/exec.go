@@ -104,6 +104,10 @@ func execAction(ctx context.Context, logger logrus.FieldLogger, rootFlags *RootF
 }
 
 func podIsRunninng(pod *corev1.Pod) bool {
+	if pod == nil {
+		return false
+	}
+
 	for _, status := range pod.Status.ContainerStatuses {
 		if status.Name == prow.TestContainerName {
 			return status.State.Running != nil
@@ -115,6 +119,10 @@ func podIsRunninng(pod *corev1.Pod) bool {
 }
 
 func podIsTerminated(pod *corev1.Pod) bool {
+	if pod == nil {
+		return false
+	}
+
 	for _, status := range pod.Status.ContainerStatuses {
 		if status.Name == prow.TestContainerName {
 			return status.State.Terminated != nil

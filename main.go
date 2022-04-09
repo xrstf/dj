@@ -1,6 +1,9 @@
 package main
 
 import (
+	"context"
+	"os"
+	"os/signal"
 	"time"
 
 	"go.xrstf.de/pjutil/pkg/cmd"
@@ -22,7 +25,19 @@ func main() {
 		cmd.ProxyCommand(logger, rootFlags),
 	)
 
-	if err := rootCmd.Execute(); err != nil {
+	ctx, cancel := context.WithCancel(context.Background())
+
+	c := make(chan os.Signal, 2)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		<-c
+		cancel()
+		logger.Info("Shutting down…")
+		<-c
+		os.Exit(1) // second signal. Exit directly.
+	}()
+
+	if err := rootCmd.ExecuteContext(ctx); err != nil {
 		logger.Fatalf("Failed: %v", err)
 	}
 }
