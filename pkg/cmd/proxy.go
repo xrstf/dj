@@ -9,7 +9,7 @@ import (
 
 func ProxyCommand(logger logrus.FieldLogger, rootFlags *RootFlags) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "proxy",
+		Use:   "proxy [ PROWJOB_ID | PROWJOB_POD_NAME ]",
 		Short: "Tunnel through to a kind cluster running inside a Prow job pod, making it avialable on localhost:8080",
 		RunE: func(c *cobra.Command, args []string) error {
 			return proxyAction(c.Context(), logger, rootFlags, args)

@@ -9,7 +9,7 @@ import (
 
 func ExecCommand(logger logrus.FieldLogger, rootFlags *RootFlags) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "exec",
+		Use:   "exec [ PROWJOB_ID | PROWJOB_POD_NAME ] COMMAND",
 		Short: "Execute a command in a Prow job Pod",
 		RunE: func(c *cobra.Command, args []string) error {
 			return execAction(c.Context(), logger, rootFlags, args)
