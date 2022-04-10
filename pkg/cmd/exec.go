@@ -5,15 +5,14 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"go.xrstf.de/pjutil/pkg/prow"
+	"go.xrstf.de/pjutil/pkg/util"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/client-go/tools/remotecommand"
-	"k8s.io/kubectl/pkg/scheme"
-	"k8s.io/kubectl/pkg/util/term"
 )
 
 func ExecCommand(logger logrus.FieldLogger, rootFlags *RootFlags) *cobra.Command {
@@ -55,52 +54,12 @@ func execAction(ctx context.Context, logger logrus.FieldLogger, rootFlags *RootF
 		return errors.New("Pod is terminated, cannot execute commands")
 	}
 
+	command := args[1:]
+
 	logger = logger.WithField("pod", pod.Name)
-	logger.WithField("cmd", args[1:]).Info("Running command")
+	logger.WithField("cmd", strings.Join(command, " ")).Info("Running command")
 
-	terminal := term.TTY{
-		In:  os.Stdin,
-		Out: os.Stdout,
-		Raw: true, // we want stdin attached and a TTY
-	}
-
-	var sizeQueue remotecommand.TerminalSizeQueue
-	if terminal.Raw {
-		// this call spawns a goroutine to monitor/update the terminal size
-		sizeQueue = terminal.MonitorSize(terminal.GetSize())
-	}
-
-	return terminal.Safe(func() error {
-		request := rootFlags.ClientSet.CoreV1().RESTClient().
-			Post().
-			Resource("pods").
-			Name(pod.Name).
-			Namespace(rootFlags.Namespace).
-			SubResource("exec")
-
-		option := &corev1.PodExecOptions{
-			Container: prow.TestContainerName,
-			Command:   args[1:],
-			Stdin:     true,
-			Stdout:    true,
-			Stderr:    true,
-			TTY:       true,
-		}
-
-		request.VersionedParams(option, scheme.ParameterCodec)
-		exec, err := remotecommand.NewSPDYExecutor(rootFlags.RESTConfig, "POST", request.URL())
-		if err != nil {
-			return err
-		}
-
-		return exec.Stream(remotecommand.StreamOptions{
-			Stdin:             os.Stdin,
-			Stdout:            os.Stdout,
-			Stderr:            os.Stderr,
-			Tty:               true,
-			TerminalSizeQueue: sizeQueue,
-		})
-	})
+	return util.RunCommandWithTTY(rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, command, os.Stdin, os.Stdout, os.Stderr)
 }
 
 func podIsRunninng(pod *corev1.Pod) bool {
