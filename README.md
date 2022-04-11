@@ -23,3 +23,19 @@ Flags:
 
 Use "pjutil [command] --help" for more information about a command.
 ```
+
+## What does this what kubectl can't do?
+
+You're asking the right questions, my friend!
+
+Indeed, originally the code was just a bunch of shellscripts, but at some point it became too
+difficult to maintain and the quoting issues of nesting bash in bash in kubectl exec in bash
+was just no fun anymore. Also, sharing the code in form of scripts was hard.
+
+What this offers over kubeconfig:
+
+* `pjutil` will automatically wait for things to happen. You can run `kind-proxy` right when
+  you Prowjob started and it will wait until kind is actually done creating the cluster.
+* `pjutil` accepts both the build ID (64-bit integer, shown on Spyglass pages) and the job ID
+  (UUID, equals the pod name). Again, you can write a label selector by hand, but `pjutil` is
+  just more convenient.
