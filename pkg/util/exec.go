@@ -25,7 +25,7 @@ func RunCommand(clientset *kubernetes.Clientset, restConfig *rest.Config, pod *c
 	option := &corev1.PodExecOptions{
 		Container: container,
 		Command:   command,
-		Stdin:     true,
+		Stdin:     stdin != nil,
 		Stdout:    true,
 		Stderr:    true,
 	}
@@ -78,9 +78,9 @@ func RunCommandWithTTY(clientset *kubernetes.Clientset, restConfig *rest.Config,
 		option := &corev1.PodExecOptions{
 			Container: prow.TestContainerName,
 			Command:   command,
-			Stdin:     true,
-			Stdout:    true,
-			Stderr:    true,
+			Stdin:     stdin != nil,
+			Stdout:    stdout != nil,
+			Stderr:    stderr != nil,
 			TTY:       true,
 		}
 

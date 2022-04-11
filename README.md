@@ -10,8 +10,8 @@ Available Commands:
   completion  Generate the autocompletion script for the specified shell
   exec        Execute a command in a Prow job Pod
   help        Help about any command
+  kind-proxy  Tunnel through to a kind cluster running inside a Prow job pod, making it available on localhost:8080
   logs        Stream the logs of the test container of a Prow job Pod
-  proxy       Tunnel through to a kind cluster running inside a Prow job pod, making it available on localhost:8080
 
 Flags:
   -h, --help                help for pjutil

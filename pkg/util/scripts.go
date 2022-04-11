@@ -26,13 +26,22 @@ done
 `
 
 	CreateKindClusterProxyScript = `
-set -e
+# enable job control
+set -m
 
 export KUBECONFIG=$(mktemp)
+
+pidFile=/tmp/kubectl-proxy-27251.pid
+if [ -f $pidFile ]; then
+  pkill -F $pidFile
+  rm $pidFile
+fi
 
 clusterName="$(kind get clusters | head -n1)"
 kind get kubeconfig --name "$clusterName" > $KUBECONFIG
 
-exec kubectl proxy --port=27251
+kubectl proxy --port=27251 >/dev/null &
+echo $! > $pidFile
+fg
 `
 )
