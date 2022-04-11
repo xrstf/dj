@@ -10,10 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
 	"go.xrstf.de/pjutil/pkg/prow"
 	"go.xrstf.de/pjutil/pkg/util"
+
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 func ProxyCommand(logger logrus.FieldLogger, rootFlags *RootFlags) *cobra.Command {
