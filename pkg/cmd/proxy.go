@@ -51,6 +51,9 @@ func proxyAction(ctx context.Context, logger logrus.FieldLogger, rootFlags *Root
 		return errors.New("Pod is terminated, cannot create proxy")
 	}
 
+	logger = logger.WithField("pod", pod.Name)
+	logger.Info("Retrieving cluster name…")
+
 	logger.Info("Waiting for Kind cluster to be available…")
 
 	script := strings.TrimSpace(util.KindClusterIsReadyScript)

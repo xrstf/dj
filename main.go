@@ -23,6 +23,7 @@ func main() {
 		cmd.LogsCommand(logger, rootFlags),
 		cmd.ExecCommand(logger, rootFlags),
 		cmd.ProxyCommand(logger, rootFlags),
+		cmd.KKPUserClusterCommand(logger, rootFlags),
 	)
 
 	ctx, cancel := context.WithCancel(context.Background())
