@@ -98,7 +98,7 @@ func (i *PodIdentifier) WaitForPod(ctx context.Context, clientset *kubernetes.Cl
 		// let the loop finish, in case there are more events (that we will ignore)
 	}
 
-	if !validPod(pod) {
+	if pod == nil || !validPod(pod) {
 		return nil, nil
 	}
 
