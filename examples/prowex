@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DEFAULT_KUBECONFIG=/path/to/a/default/kubeconfig
+
+if [ -z "${1:-}" ]; then
+  echo "Usage: prowex POD_NAME [COMMAND=bash]"
+  exit 1
+fi
+
+kubeconfig="${KUBECONFIG:-$DEFAULT_KUBECONFIG}"
+podName="$1"
+shift
+
+dj --kubeconfig "$kubeconfig" exec "$podName" -- $@

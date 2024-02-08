@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DEFAULT_KUBECONFIG=/path/to/a/default/kubeconfig
+
+if [ -z "$1" ]; then
+  echo "Usage: prowuc POD_NAME"
+  exit 1
+fi
+
+kubeconfig="${KUBECONFIG:-$DEFAULT_KUBECONFIG}"
+
+dj --kubeconfig "$kubeconfig" kkp-usercluster -w "$1"
