@@ -19,15 +19,15 @@ type RootFlags struct {
 	Verbose    bool
 }
 
-func RootCommand(logger *logrus.Logger) (*cobra.Command, *RootFlags) {
+func RootCommand(logger *logrus.Logger, version string) (*cobra.Command, *RootFlags) {
 	opt := RootFlags{
 		Namespace: metav1.NamespaceDefault,
 	}
 
 	cmd := &cobra.Command{
-		Use:           "pjutil",
-		Short:         "Makes working with tests in Prowjobs easier",
-		Version:       "v0.1.0",
+		Use:           "dj",
+		Short:         "Makes working with KKP e2e tests in Prowjobs easier",
+		Version:       version,
 		SilenceErrors: true,
 		PersistentPreRunE: func(_ *cobra.Command, _ []string) (err error) {
 			if opt.Kubeconfig == "" {

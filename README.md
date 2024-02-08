@@ -1,10 +1,10 @@
-# pjutil
+# dj
 
 ```
-Makes working with tests in Prowjobs easier
+Makes working with KKP e2e tests in Prowjobs easier
 
 Usage:
-  pjutil [command]
+  dj [command]
 
 Available Commands:
   completion      Generate the autocompletion script for the specified shell
@@ -15,27 +15,27 @@ Available Commands:
   logs            Stream the logs of the test container of a Prow job Pod
 
 Flags:
-  -h, --help                help for pjutil
+  -h, --help                help for dj
       --kubeconfig string   kubeconfig file to use (uses $KUBECONFIG by default)
   -n, --namespace string    Kubernetes namespace where Prow jobs are running in (default "default")
   -v, --verbose             Enable more verbose output
-      --version             version for pjutil
+      --version             version for dj
 
-Use "pjutil [command] --help" for more information about a command.
+Use "dj [command] --help" for more information about a command.
 ```
 
 ## What does this what kubectl can't do?
 
 You're asking the right questions, my friend!
 
-Indeed, originally the code was just a bunch of shellscripts, but at some point it became too
+Indeed, originally the code was just a bunch of shell scripts, but at some point it became too
 difficult to maintain and the quoting issues of nesting bash in bash in kubectl exec in bash
 was just no fun anymore. Also, sharing the code in form of scripts was hard.
 
 What this offers over kubeconfig:
 
-* `pjutil` will automatically wait for things to happen. You can run `kind-proxy` right when
+* `dj` will automatically wait for things to happen. You can run `kind-proxy` right when
   you Prowjob started and it will wait until kind is actually done creating the cluster.
-* `pjutil` accepts both the build ID (64-bit integer, shown on Spyglass pages) and the job ID
-  (UUID, equals the pod name). Again, you can write a label selector by hand, but `pjutil` is
+* `dj` accepts both the build ID (64-bit integer, shown on Spyglass pages) and the job ID
+  (UUID, equals the pod name). Again, you can write a label selector by hand, but `dj` is
   just more convenient.

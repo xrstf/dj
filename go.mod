@@ -1,4 +1,4 @@
-module go.xrstf.de/pjutil
+module go.xrstf.de/dj
 
 go 1.18
 

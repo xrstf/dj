@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 
-	"go.xrstf.de/pjutil/pkg/prow"
-	"go.xrstf.de/pjutil/pkg/util"
-
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+
+	"go.xrstf.de/dj/pkg/prow"
+	"go.xrstf.de/dj/pkg/util"
 )
 
 func KKPUserClusterCommand(logger logrus.FieldLogger, rootFlags *RootFlags) *cobra.Command {

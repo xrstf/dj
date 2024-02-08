@@ -5,14 +5,14 @@ import (
 	"errors"
 	"io"
 
-	"go.xrstf.de/pjutil/pkg/prow"
-
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
 	"k8s.io/kubectl/pkg/scheme"
 	"k8s.io/kubectl/pkg/util/term"
+
+	"go.xrstf.de/dj/pkg/prow"
 )
 
 func RunCommand(clientset *kubernetes.Clientset, restConfig *rest.Config, pod *corev1.Pod, container string, command []string, stdin io.Reader) (string, error) {

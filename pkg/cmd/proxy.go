@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"go.xrstf.de/pjutil/pkg/prow"
-	"go.xrstf.de/pjutil/pkg/util"
-
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+
+	"go.xrstf.de/dj/pkg/prow"
+	"go.xrstf.de/dj/pkg/util"
 )
 
 func ProxyCommand(logger logrus.FieldLogger, rootFlags *RootFlags) *cobra.Command {
@@ -141,7 +141,7 @@ func proxyAction(ctx context.Context, logger logrus.FieldLogger, rootFlags *Root
 	// Note that it's not possible to interrupt a SPDY connection, so it is effectively
 	// impossible to cancel a running command. For this reason we cannot have this
 	// command run in the background (without a TTY attached), because then we can never
-	// kill it and even when pjutil ends, the bash will continue to run, and this will
+	// kill it and even when dj ends, the bash will continue to run, and this will
 	// block the temporary port and could lead to trouble when a second proxy is attempted.
 	// Due to this, we instead make the kubectl-proxy command interactive and attach the TTY,
 	// so that any Ctrl-C will be caught by the bash in the container and the kubectl-proxy

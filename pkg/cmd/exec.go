@@ -7,12 +7,12 @@ import (
 	"os"
 	"strings"
 
-	"go.xrstf.de/pjutil/pkg/prow"
-	"go.xrstf.de/pjutil/pkg/util"
-
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	corev1 "k8s.io/api/core/v1"
+
+	"go.xrstf.de/dj/pkg/prow"
+	"go.xrstf.de/dj/pkg/util"
 )
 
 func ExecCommand(logger logrus.FieldLogger, rootFlags *RootFlags) *cobra.Command {
