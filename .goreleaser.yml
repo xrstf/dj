@@ -37,5 +37,9 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
+    files:
+      - LICENSE
+      - README.md
+      - examples/*
 checksum:
   disable: true
