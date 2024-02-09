@@ -59,7 +59,7 @@ func execAction(ctx context.Context, logger logrus.FieldLogger, rootFlags *RootF
 	logger = logger.WithField("pod", pod.Name)
 	logger.WithField("cmd", strings.Join(command, " ")).Info("Running command")
 
-	return util.RunCommandWithTTY(rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, command, os.Stdin, os.Stdout, os.Stderr)
+	return util.RunCommandWithTTY(ctx, rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, command, os.Stdin, os.Stdout, os.Stderr)
 }
 
 func podIsRunninng(pod *corev1.Pod) bool {

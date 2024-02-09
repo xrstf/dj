@@ -2,6 +2,7 @@ package util
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"io"
 
@@ -15,7 +16,7 @@ import (
 	"go.xrstf.de/dj/pkg/prow"
 )
 
-func RunCommand(clientset *kubernetes.Clientset, restConfig *rest.Config, pod *corev1.Pod, container string, command []string, stdin io.Reader) (string, error) {
+func RunCommand(ctx context.Context, clientset *kubernetes.Clientset, restConfig *rest.Config, pod *corev1.Pod, container string, command []string, stdin io.Reader) (string, error) {
 	request := clientset.CoreV1().RESTClient().
 		Post().
 		Resource("pods").
@@ -43,7 +44,7 @@ func RunCommand(clientset *kubernetes.Clientset, restConfig *rest.Config, pod *c
 		stderr bytes.Buffer
 	)
 
-	err = exec.Stream(remotecommand.StreamOptions{
+	err = exec.StreamWithContext(ctx, remotecommand.StreamOptions{
 		Stdin:  stdin,
 		Stdout: &stdout,
 		Stderr: &stderr,
@@ -55,7 +56,7 @@ func RunCommand(clientset *kubernetes.Clientset, restConfig *rest.Config, pod *c
 	return stdout.String(), nil
 }
 
-func RunCommandWithTTY(clientset *kubernetes.Clientset, restConfig *rest.Config, pod *corev1.Pod, container string, command []string, stdin io.Reader, stdout io.Writer, stderr io.Writer) error {
+func RunCommandWithTTY(ctx context.Context, clientset *kubernetes.Clientset, restConfig *rest.Config, pod *corev1.Pod, container string, command []string, stdin io.Reader, stdout io.Writer, stderr io.Writer) error {
 	terminal := term.TTY{
 		In:  stdin,
 		Out: stdout,
@@ -91,7 +92,7 @@ func RunCommandWithTTY(clientset *kubernetes.Clientset, restConfig *rest.Config,
 			return err
 		}
 
-		return exec.Stream(remotecommand.StreamOptions{
+		return exec.StreamWithContext(ctx, remotecommand.StreamOptions{
 			Stdin:             stdin,
 			Stdout:            stdout,
 			Stderr:            stderr,

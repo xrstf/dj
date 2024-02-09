@@ -58,7 +58,7 @@ func proxyAction(ctx context.Context, logger logrus.FieldLogger, rootFlags *Root
 	logger.Info("Waiting for Kind cluster to be available…")
 
 	script := strings.TrimSpace(util.KindClusterIsReadyScript)
-	if _, err := util.RunCommand(rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, []string{"bash", "-c", script}, nil); err != nil {
+	if _, err := util.RunCommand(ctx, rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, []string{"bash", "-c", script}, nil); err != nil {
 		return err
 	}
 
@@ -149,13 +149,15 @@ func proxyAction(ctx context.Context, logger logrus.FieldLogger, rootFlags *Root
 	logger.Info("Proxying Kind cluster to localhost…")
 
 	script = strings.TrimSpace(util.CreateKindClusterProxyScript)
-	err = util.RunCommandWithTTY(rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, []string{"bash", "-c", script}, os.Stdin, io.Discard, io.Discard)
+	err = util.RunCommandWithTTY(ctx, rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, []string{"bash", "-c", script}, os.Stdin, io.Discard, io.Discard)
+	if err != nil {
+		return fmt.Errorf("failed to run proxy: %w", err)
+	}
 
 	// Now the kubectl-proxy has ended, we can stop the port forwarding
 	logger.Info("Stopping port-forwarding…")
 	cancel()
 	// <-fwEnded
-	cmd.Wait()
 
-	return nil
+	return cmd.Wait()
 }

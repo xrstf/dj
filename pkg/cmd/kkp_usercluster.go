@@ -63,7 +63,7 @@ func kkpUserClusterAction(ctx context.Context, logger logrus.FieldLogger, rootFl
 	logger.Info("Waiting for Kind cluster to be available…")
 
 	script := strings.TrimSpace(util.KindClusterIsReadyScript)
-	if _, err := util.RunCommand(rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, []string{"bash", "-c", script}, nil); err != nil {
+	if _, err := util.RunCommand(ctx, rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, []string{"bash", "-c", script}, nil); err != nil {
 		return err
 	}
 
@@ -74,7 +74,7 @@ func kkpUserClusterAction(ctx context.Context, logger logrus.FieldLogger, rootFl
 		logger.Info("Retrieving cluster name…")
 
 		command := []string{"bash", "-c", util.OutputKKPUserClusterName}
-		clusterName, err = util.RunCommand(rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, command, nil)
+		clusterName, err = util.RunCommand(ctx, rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, command, nil)
 		if err != nil {
 			return fmt.Errorf("failed to get cluster name: %w", err)
 		}
@@ -86,7 +86,7 @@ func kkpUserClusterAction(ctx context.Context, logger logrus.FieldLogger, rootFl
 	logger.Info("Retrieving kubeconfig…")
 
 	command := []string{"bash", "-c", util.OutputKKPUserClusterKubeconfig}
-	kubeconfig, err := util.RunCommand(rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, command, nil)
+	kubeconfig, err := util.RunCommand(ctx, rootFlags.ClientSet, rootFlags.RESTConfig, pod, prow.TestContainerName, command, nil)
 	if err != nil {
 		return fmt.Errorf("failed to get kubeconfig: %w", err)
 	}
