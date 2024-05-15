@@ -12,10 +12,11 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	corev1 "k8s.io/api/core/v1"
 
 	"go.xrstf.de/dj/pkg/prow"
 	"go.xrstf.de/dj/pkg/util"
+
+	corev1 "k8s.io/api/core/v1"
 )
 
 func ExecCommand(logger logrus.FieldLogger, rootFlags *RootFlags) *cobra.Command {
