@@ -1,4 +1,11 @@
-# dj
+# Migration note
+
+> [!IMPORTANT]
+> `dj` has been migrated to [codeberg.org/xrstf/dj](https://codeberg.org/xrstf/dj).
+
+---
+
+## dj
 
 ```
 Makes working with KKP e2e tests in Prowjobs easier
@@ -24,7 +31,7 @@ Flags:
 Use "dj [command] --help" for more information about a command.
 ```
 
-## What does this what kubectl can't do?
+### What does this what kubectl can't do?
 
 You're asking the right questions, my friend!
 
